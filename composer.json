@@ -7,7 +7,7 @@
 
     "autoload": {
         "psr-4": {
-            "congressapp\\": "./app",
+            "exo\\": "./seance",
             "confBDD\\": "./conf"
         }
     }
