@@ -4,8 +4,8 @@ namespace seance\model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Game extends Model {
-    protected $table = 'game'; 
+class Platform extends Model {
+    protected $table = 'platform';
     protected $primaryKey = 'id';
     public $timestamps = false;
 }
