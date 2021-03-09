@@ -46,19 +46,17 @@ echo "<br>";
 echo "<h2>Plateformes dont la base installée est supérieur à 10 000 000 :</h2>" . count($liste3) . "<br>";
 echo "<br>";
 echo "<br>";
-$liste4 = model\Game::all();
+echo "<h1> Lister 442 jeux à partir du 21173ème </h1>";
+echo "<br>";
+$liste4 = model\Game::where('id','>','21173')->get();
 $inc = 0;
-$inc2 = 0;
 // a refaire plus propre
 foreach ($liste4 as $games){
-    if ($inc>21173){
-        if($inc2<=441){
-            echo $games->name . " " . $games->id . "<br>";
-            $inc2++;
-        }
+    if($inc<=441){
+        echo $games->name . " " . $games->id . "<br>";
+        $inc++;
     }
-    $inc++;
 }
-echo $inc2;
+echo "<h2>NB : </h2>" . $inc;
 echo "<br>";
 echo "<br>";
