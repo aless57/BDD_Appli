@@ -81,5 +81,53 @@ echo "<br>";
 echo "<h2> Les jeux dont le nom débute par Mario et dont le rating initial contient 3+ </h2>\n";
 echo "<br>";
 
+$jeu3 = Game::where('name','like','%Mario%')->whereHas("games_rating", function($q) {
+    $q->where('name', 'like', '%3+');
+})->get();
+
+foreach ($jeu3 as $jeu){
+    echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
+}
+echo "<br>";
+
+echo "<h2>les jeux dont le nom débute par Mario, publiés par une compagnie dont le nom contient Inc. et dont le rating initial contient 3+</h2>\n";
+echo "<br>";
+
+$jeu3 = Game::where('name','like','%Mario%')->whereHas("games_rating", function($q) {
+    $q->where('name', 'like', '%3+');
+});
+
+$jeuNouveau = $jeu3->whereHas('companys', function($q) {
+    $q->where('name', 'like', '%Inc%');
+})->get();
+
+foreach ($jeuNouveau as $jeu){
+    echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
+}
+echo "<br>";
+
+echo "<h2>les jeux dont le nom débute Mario, publiés par une compagnie dont le nom contient Inc,
+dont le rating initial contient 3+ et ayant reçu un avis de la part du rating board nommé
+CERO</h2>\n";
+echo "<br>";
+
+$jeu3 = Game::where('name','like','%Mario%')->whereHas("games_rating", function($q) {
+    $q->where('name', 'like', '%3+');
+});
+
+$jeuNouveau = $jeu3->whereHas('companys', function($q) {
+    $q->where('name', 'like', '%Inc%');
+})->get();
+
+$jeuNouveau2 = $jeu3->whereHas('companys', function($q) {
+    $q->where('name', 'like', '%Inc%');
+})->get();
+
+foreach ($jeuNouveau2 as $jeu){
+    echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
+}
+echo "<br>";
+
+
 
 
