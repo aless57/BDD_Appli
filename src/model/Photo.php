@@ -10,6 +10,6 @@ class Photo extends Model {
     public $timestamps = false;
 
     public function annonce(){
-        return $this->belongsTo(model\Annonce, id_annonce);
+        return $this->belongsTo("model\Annonce", "id_annonce");
     }
 }

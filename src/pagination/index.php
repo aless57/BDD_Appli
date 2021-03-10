@@ -19,7 +19,7 @@ $pages = ceil($nbJeux / $parPage);
 
 $premier = ($currentPage * $parPage) - $parPage;
 
-$sql = 'SELECT * FROM `game` ORDER BY `id` ASC LIMIT :premier, :parpage;';
+$sql = 'SELECT * FROM `game` ORDER BY `id` ASC LIMIT :premier, :parpage;'; //POUR ELOQUENT : take(500) traduit limit - skip($premier) traduit offset
 $query = $db->prepare($sql);
 $query->bindValue(':premier', $premier, PDO::PARAM_INT);
 $query->bindValue(':parpage', $parPage, PDO::PARAM_INT);

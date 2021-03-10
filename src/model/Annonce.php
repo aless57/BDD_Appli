@@ -10,10 +10,10 @@ class Annonce extends Model {
     public $timestamps = false;
 
     public function photos(){
-        return $this->hasMany(model\Photo, id_photo);
+        return $this->hasMany("model\Photo", "id_annonce");
     }
 
     public function categories(){
-        return $this->belongsToMany(model\Categorie, appartenanceCategorieAnnonce, annonce_id, categorie_id);
+        return $this->belongsToMany("model\Categorie", "appartenanceCategorieAnnonce", "annonce_id", "categorie_id");
     }
 }
