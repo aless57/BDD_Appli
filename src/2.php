@@ -55,9 +55,30 @@ foreach ($sony as $comp){
     }
 }
 echo "\n<br>";
-echo "<br>";
+
 
 echo "<h2> Le rating initial (indiquer le rating board) des jeux dont le nom contient Mario </h2>\n";
+echo "<br>";
+$mario = Game::where('name','like','%Mario%')->get();
+foreach ($mario as $jeu){
+    $rating = $jeu->games_rating;
+    echo "<b>Nom : </b>" . $jeu->name . "<br>";
+    foreach ($rating as $rate){
+        echo "Rating : " . $rate->name . "\n<br>";
+    }
+    echo "\n<br>";
+}
+echo "<br>";
+
+echo "<h2> Les jeux dont le nom débute par Mario et ayant plus de 3 personnages </h2>\n";
+echo "<br>";
+$jeux = Game::where('name','like','%Mario%')->has("characters",">","3")->get();
+foreach ($jeux as $jeu){
+    echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
+}
+echo "<br>";
+
+echo "<h2> Les jeux dont le nom débute par Mario et dont le rating initial contient 3+ </h2>\n";
 echo "<br>";
 
 
