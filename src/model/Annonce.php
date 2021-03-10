@@ -14,6 +14,6 @@ class Annonce extends Model {
     }
 
     public function categories(){
-        return $this->belongsToMany(model\Categorie, id_categorie);
+        return $this->belongsToMany(model\Categorie, appartenanceCategorieAnnonce, annonce_id, categorie_id);
     }
 }

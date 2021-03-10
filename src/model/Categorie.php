@@ -10,7 +10,7 @@ class Categorie extends Model {
     public $timestamps = false;
 
     public function appartientAnnonces(){
-        return $this->belongsToMany(model\Annonce, id_annonce);
+        return $this->belongsToMany(model\Annonce, appartenanceCategorieAnnonce, categorie_id, annonce_id);
     }
 
     public function annonces(){

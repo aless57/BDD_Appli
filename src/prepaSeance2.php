@@ -18,21 +18,34 @@ $app = new \Slim\App($container);
 
 $matchThese = [];
 
-//$v = Ville::where('id','=',2)->first() ;
-//$v->hasMany('\model\Club,'ville_id')->get() ;
 
-
-
+//question 1
 $annonce22 = model\Annonce::where('id', '=', '22')->first();
+
+//question 2
 $question2 = $annonce22->photos()->where('taille_octet','>=','100000')->get();
 
+//question 3
 $listeAnnonce = model\Annonce::all();
 $question3 = $listeAnnonce->where($listeAnnonce->photos()->count() , ">=", "3")->get();
 
-$question3 = $listeAnnonce->photos()->where('taille_octet','>=','100000')->get();
+//question 4
+$question4 = $listeAnnonce->photos()->where('taille_octet','>=','100000')->get();
 
-User::create(['name' => 'Durand', 'email' => 'durand@chezlui.fr', 'password' => 'pass'])
-    /**
-    $posts = App\Post::withCount(['votes', 'comments' => function ($query) {
-        $query->where('content', 'like', 'foo%');
-    }])->get();**/
+//question 4
+$photo =  model\Photo::find(12);
+$photo->id_annonce = 22;
+
+//question 5
+$category42 = model\Categorie::find(42);
+$category73 = model\Categorie::find(72);
+
+$lien1 = new appartenanceCategorieAnnonce;
+$lien2 = new appartenanceCategorieAnnonce;
+$lien1->id_annonce = 22;
+$lien2->id_annonce = 22;
+$lien1->id_categorie = 42;
+$lien2->id_categorie = 73;
+
+$lien1->save();
+$lien2->save();
