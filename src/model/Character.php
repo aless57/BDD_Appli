@@ -1,15 +1,19 @@
 <?php
 
+
 namespace seance\model;
+
 
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model {
-    protected $table = 'company';
+class Character extends Model
+{
+    protected $table = 'character';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
+
     public function games(){
-        return $this->belongsToMany(Game::class, "game_developers", "comp_id", "game_id");
+        return $this->belongsToMany(Game::class, "game2character", "character_id", "game_id");
     }
 }
