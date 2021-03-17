@@ -104,7 +104,7 @@ $jeuNouveau = $jeu3->whereHas('companys', function($q) {
 foreach ($jeuNouveau as $jeu){
     echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
 }
-echo "<br>";
+echo "\n<br>";
 
 echo "<h2>les jeux dont le nom débute Mario, publiés par une compagnie dont le nom contient Inc,
 dont le rating initial contient 3+ et ayant reçu un avis de la part du rating board nommé
