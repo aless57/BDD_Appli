@@ -34,7 +34,7 @@ foreach ($listeJeu as $jeu){
 echo "<br>";
 
 $time_end = microtime();
-$time = $time_end = $time_start;
+$time = $time_end - $time_start;
 
 echo "Le temps est de $time";
 echo "<br>";
