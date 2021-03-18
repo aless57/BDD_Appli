@@ -215,12 +215,16 @@ echo "<br>";
 echo "<br>";
 echo "<h1>Afficher les noms des persos apparus pour la 1ère fois dans 1 jeu dont le nom contient Mario</h1>";
 
-$listePerso = Character::all();
+$listePerso = Character::whereHas("games", function($q){
+    $q->where("name","like","%Mario%");
+})->get();
+
 foreach ($listePerso as $perso){
     $jeu = $perso->first_appeared_in_game_id;
-    $game = Game::where("name","like","%Mario%");
-    $gameID = $game->where("id","=",$jeu)->get();
-    echo $perso->name . $game->name;
+//    $game = Game::where("name","like","%Mario%");
+//    $gameID = $game->where("id","=",$jeu)->get();
+    $game = Game::where("name","like","%Mario%")->where("id","=",$jeu)->first();
+    echo "Nom du perso : " . $perso->name . "<br>" . "Nom du jeu" . $game->name . "<br>";
 }
 
 
