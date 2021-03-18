@@ -6,7 +6,7 @@
 // Comment s'installe Faker ?
 // --> Faker s'installe a travers le composer. Il suffit d'ajouter en ligne de commande : composer require fakerphp/faker
 
-$faker = Faker\Factory:create();
+$faker = Faker\Factory::create();
 
 // Creation d'une adresse américaine
 $faker->addProvider(new Faker\Provider\en_US\Address($faker));
