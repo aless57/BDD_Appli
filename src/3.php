@@ -223,7 +223,7 @@ foreach ($listePerso as $perso){
     $jeu = $perso->first_appeared_in_game_id;
 //    $game = Game::where("name","like","%Mario%");
 //    $gameID = $game->where("id","=",$jeu)->get();
-    $game = Game::where("name","like","%Mario%")->where("id","=",$jeu)->first();
+    $game = Game::find("name","like","%Mario%")->where("id","=",$jeu)->first();
     echo "Nom du perso : " . $perso->name . "<br>" . "Nom du jeu" . $game->name . "<br>";
 }
 
