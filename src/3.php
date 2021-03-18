@@ -3,6 +3,7 @@
 use seance\model\Game;
 use seance\model\Character;
 use \seance\model\Company;
+use Illuminate\Database\Capsule\Manager as DB;
 
 require '../vendor/autoload.php';
 
@@ -14,7 +15,6 @@ $db = new \Illuminate\Database\Capsule\Manager();
 $db->addConnection(parse_ini_file('../conf/conf.ini'));
 $db->setAsGlobal();
 $db->bootEloquent();
-
 echo "<h1> TD 3 BDD Application </h1>\n\n";
 echo "<br>";
 echo "<br>";
@@ -155,8 +155,86 @@ foreach ($listeJeu as $jeu){
 }
 
 echo "<br>";
-echo "Le temps pour le jeu qui débute par Sonic est de $time";
-echo "<br>"; 
+echo "Le temps pour le jeu qui débute par Mortal est de $time";
+echo "<br>";
+
+echo "<h2> Le nom des jeux dont le nom (du jeu) débute par 'Rocket' </h2>\n";
+echo "<br>";
+$time_start = microtime();
+$listeJeu = Game::where('name','like','Rocket%')->get();
+$time_end = microtime();
+$time = $time_end = $time_start;
+foreach ($listeJeu as $jeu){
+    $jeuRocket = $jeu->name;
+    echo "<b>Nom : </b>" . $jeuRocket ."\n<br>";
+}
+
+echo "<br>";
+echo "Le temps pour le jeu qui débute par Rocket est de $time";
+echo "<br>";
+
+echo "<h2> Le nom des jeux dont le nom (du jeu) débute par 'Call' </h2>\n";
+echo "<br>";
+$time_start = microtime();
+$listeJeu = Game::where('name','like','Call%')->get();
+$time_end = microtime();
+$time = $time_end = $time_start;
+foreach ($listeJeu as $jeu){
+    $jeuCall = $jeu->name;
+    echo "<b>Nom : </b>" . $jeuCall ."\n<br>";
+}
+
+echo "<br>";
+echo "Le temps pour le jeu qui débute par Call est de $time";
+echo "<br>";
+
+
+echo "<h1>Programmez une fonction d'affichage du log de requêtes de façon à ce qu'il soit lisible</h1>";
+
+
+echo "<br>";
+echo "<h1>Lister les jeux dont le nom contient 'Mario'</h1>";
+echo "<br>";
+DB::connection()->enableQueryLog();
+$i = 0;
+$listeJeu = Game::where('name','like','Mario%')->get();
+
+
+echo "Nombre de requetes : $i";
+DB::connection()->disableQueryLog();
+echo "<br>";
+echo "<br>";
+echo "<h1>Afficher le nom des personnages du jeu 12342</h1>";
+echo "<br>";
+
+DB::connection()->enableQueryLog();
+$i = 0;
+$personnage12342 = Game::find('12342');
+$salut = $personnage12342->characters;
+echo "<br>";
+echo "<br>";
+echo "<h1>Afficher les noms des persos apparus pour la 1ère fois dans 1 jeu dont le nom contient Mario</h1>";
+
+$listePerso = Character::all();
+foreach ($listePerso as $perso){
+    $jeu = $perso->first_appeared_in_game_id;
+    $game = Game::where("name","like","%Mario%");
+    $gameID = $game->where("id","=",$jeu)->get();
+    echo $perso->name . $game->name;
+}
 
 
 
+foreach( DB::getQueryLog() as $q){
+    $i++;
+    echo "-------------- <br>\n";
+    echo "query : " . $q['query'] ."<br>\n";
+    echo " --- bindings : [ ";
+    foreach ($q['bindings'] as $b ) {
+        echo " ". $b."," ;
+    }
+    echo " ] ---<br>\n";
+    echo "-------------- <br><br>\n \n";
+};
+
+echo "Nombre de requetes : $i";
