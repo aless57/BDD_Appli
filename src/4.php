@@ -22,7 +22,8 @@ echo "<br>";
 echo "<br>";
 
 echo "<h2> Programmer un script php qui crée 2 utilisateurs, 3 commentaires par utilisateurs, tous concernant le jeu 12342. </h2>";
-
+/*
+// PARTIE 1 
 $user1 = new User();
 $user2 = new User();
 
@@ -90,4 +91,36 @@ $commentaire3user1->save();
 $commentaire1user2->save();
 $commentaire2user2->save();
 $commentaire3user2->save();
+*/
+// PARTIE 2
+
+// Boucle pour user
+$faker = Faker\Factory::create("fr_FR");
+
+for($i =0; $i <25000 ; $i++){
+    $u =new User();
+    $u ->nom = $faker->lastName();
+    $u -> prenom = $faker->firstName();
+    $uEmail = $u->prenom .$u->nom."@".$faker->freeEmailDomain();
+    $u -> email = $uEmail;
+    $u -> tel = $faker->phoneNumber();
+    $u -> birthDate = $faker ->date($format = 'Y-m-d', $max = 'now');
+    $u->save();
+
+    for($i =0; $i <10 ; $i++){
+        $commentaire = new Commentaire();
+        $commentaire->title = $faker->word();
+        $commentaire->content = $faker -> text();
+        $commentaire->fk_email = $uEmail;  
+        $commentaire->fk_idjeu = random_int(1, 47978);
+        $commentaire->save();
+    }
+    
+
+}
+
+
+
+
+
 
