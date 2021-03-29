@@ -1,8 +1,10 @@
 <?php
 
 use seance\model\Game;
+use seance\model\Genre;
 use seance\model\Character;
 use \seance\model\Company;
+
 
 require '../vendor/autoload.php';
 
@@ -19,7 +21,7 @@ echo "<h1> TD 2 BDD Application </h1>\n\n";
 echo "<br>";
 echo "<br>";
 
-
+$njzk = Genre::find(2);
 
 echo "<h2> Afficher (name , deck) les personnages du jeu 12342 </h2>\n";
 echo "<br>";
@@ -126,6 +128,25 @@ $jeuNouveau2 = $jeu3->whereHas('companys', function($q) {
 foreach ($jeuNouveau2 as $jeu){
     echo "<b>Nom : </b>" . $jeu->name . "\n<br>";
 }
+echo "<br>";
+
+echo "<h2>nouveau genre de jeu et associations</h2>\n";
+echo "<br>";
+
+
+//Genre::create(['name' => 'simulateurDeMarche', 'deck' => 'oui', 'description' => 'oui']);
+
+
+$newGenre = new Genre;
+$newGenre->name = 'simulateurDeMarche';
+$newGenre->deck = 'oui';
+$newGenre->description = 'oui';
+$newGenre->jeux()->attach([12,56,345]);
+$newGenre->save();
+
+
+
+
 echo "<br>";
 
 

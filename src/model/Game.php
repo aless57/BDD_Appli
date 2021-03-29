@@ -20,4 +20,8 @@ class Game extends Model {
     public function games_rating(){
         return $this->belongsToMany(Game_rating::class, "game2rating", "game_id", "rating_id");
     }
+
+    public function genres(){
+        return $this->belongsToMany(Company::class, "game2genre", "game_id", "genre_id");
+    }
 }
