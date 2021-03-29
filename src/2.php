@@ -150,5 +150,13 @@ $newGenre->save();
 echo "<br>";
 
 
+$newGenre = new Genre;
+$newGenre->name = 'simulateurDeMarche';
+$newGenre->deck = 'oui';
+$newGenre->description = 'oui';
+$newGenre->jeux()->attach([12,56,345]);
+$newGenre->save();
+
+
 
 
