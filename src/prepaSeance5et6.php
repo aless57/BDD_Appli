@@ -7,7 +7,7 @@
 
 // question 2
 //dans l'url
-//$paramValue = $app->request()->get('paramName');
+//$paramValue = $app->request()->get('paramName');  quetqueryparam
 //$paramValue = $app->request()->post('paramName');
 //dans le corps de l'appli
 //$post = $rq->getParsedBody()

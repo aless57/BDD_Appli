@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 $config = ['settings' => [
     'displayErrorDetails' => true,
@@ -17,4 +17,4 @@ $app = new \Slim\App($container);
 
 
 //Chemin Accueil
-$app->get('/api/games/id', ControleurAccueil::class.':accueil')->setName('racine');
+$app->get('/api/games/{id}', ControleurAPI::class.':generateObjAPI')->setName('racine');
