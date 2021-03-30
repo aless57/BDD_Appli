@@ -22,22 +22,32 @@ class ControleurAPI {
 
     public function affichageJeux(Request $rq, Response $rs, $args) {
         $page = false;
+
         if($_GET != null){
-            $page = $_GET['page'];
+            $page = $rq->getQueryParam('page');
         }
         if(!$page || $page==1){
             $listeJeux = Game::select("id","name","alias","deck")->limit(200)->get();
-            $pagePlus = $page + 1;
-            $pageMoins = $page - 1;
-            $links = array("next" => array("href" => "/api/games?page={$pagePlus}"));
+            foreach ($listeJeux as $lejeu){
+                $link = "/api/game/{$lejeu->id}";
+                $lejeu["links"]=array("self"=>array("href" => $link));
+            }
+            $links = array("next" => array("href" => "/api/games?page=2"));
         }elseif ($page==240){
-            $listeJeux = Game::select("id","name","alias","deck")->limit(200)->get();
-            $pagePlus = $page + 1;
+            $listeJeux = Game::select("id","name","alias","deck")->offset(200*($page-1))->limit(200)->get();
+            foreach ($listeJeux as $lejeu){
+                $link = "/api/game/{$lejeu->id}";
+                $lejeu["links"]=array("self"=>array("href" => $link));
+            }
             $pageMoins = $page - 1;
             $links = array("prev" => array("href" => "/api/games?page={$pageMoins}"));
         }
         else{
             $listeJeux = Game::select("id","name","alias","deck")->offset(200*($page-1))->limit(200)->get();
+            foreach ($listeJeux as $lejeu){
+                $link = "/api/game/{$lejeu->id}";
+                $lejeu["links"]=array("self"=>array("href" => $link));
+            }
             $pagePlus = $page + 1 ;
             $pageMoins = $page - 1;
             $links = array("prev" => array("href" => "/api/games?page={$pageMoins}"), "next" => array("href" => "/api/games?page={$pagePlus}"));
