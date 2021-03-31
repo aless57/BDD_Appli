@@ -1,5 +1,6 @@
 <?php
 namespace seance\controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use seance\model\Commentaire;
@@ -25,9 +26,7 @@ class ControleurAPI {
                 array_walk_recursive($platform, function(&$v) { $v = strip_tags($v); });
                 $arrayPlatform[] = array("id"=>$platform->id , "nom"=>$platform->name, "alias"=>$platform->alias,"abbreviation"=>$platform->abbreviation);
             }
-            if($arrayPlatform!=[]){
-                $array['platforms'] = $arrayPlatform;
-            }
+            $array['platforms'] = $arrayPlatform;
             $url_jeuCommentaire = $this->container->router->pathFor("affichageCommentaireJeu", ['id' => $args['id']]);
             $array['links'] = array("comments" => array("href" =>$url_jeuCommentaire));
             $tableau = json_encode($array, JSON_UNESCAPED_SLASHES);
@@ -96,6 +95,57 @@ class ControleurAPI {
             $rs->getBody()->write($vue->render(0));
         }
         return $rs;
+    }
+
+    public function affichageCharacterJeu(Request $rq, Response $rs, $args) {
+        try {
+            $lesCharacters = Game::find($args['id'])->characters()->get();
+            $array = [];
+            foreach ($lesCharacters as $character){
+                 $array["characters"][]= array("character" => array("id"=>$character->id,"name"=>$character->name));
+            }
+            if($array==[]){
+                $array["characters"] = [];
+            }
+            $tableau = json_encode($array, JSON_UNESCAPED_SLASHES);
+            $vue = new vues\Vue([$tableau], $this->container);
+            $rs->getBody()->write($vue->render(0));
+
+        }catch (\Exception $e){
+            $rs = $rs->withJson(['error' => 'Jeu introuvable'],404);
+        }
+        return $rs;
+    }
+
+    public function injecterCommentaire(Request $rq, Response $rs, $args)
+    {
+        $post = $rq->getParsedBody();
+        if (isset($post['commentaire'])) {
+            try {
+                $id = filter_var($post['commentaire']['id']);
+                $title = filter_var($post['commentaire']['content']);
+                $content = filter_var($post['commentaire']['content']);
+                $created_at = filter_var($post['commentaire']['created_at']);
+                $fk_email = filter_var($post['commentaire']['fk_email']);
+
+                $commentaire = new Commentaire();
+                $commentaire->id = $id;
+                $commentaire->title = $title;
+                $commentaire->content = $content;
+                $commentaire->created_at = $created_at;
+                $commentaire->fk_email = $fk_email;
+                $commentaire->save();
+
+                $rs->write(json_encode($commentaire, JSON_PRETTY_PRINT));
+                return $rs->withStatus(201)->withHeader('Location','/api/comments'.$id);
+            } catch (ModelNotFoundException $e) {
+                $rs = $rs->withJson(['error' => 'Pas de user'], 404);
+                return $rs;
+            }
+        }else{
+            $rs = $rs->withJson(['error' => 'Pas de commentaire'], 400);
+            return $rs;
+        }
     }
 
 }

@@ -22,10 +22,11 @@ $container = new \Slim\Container($config);
 $app = new \Slim\App($container);
 
 
-//Chemin Accueil
+//Chemin
 $app->get('/api/games/{id}', ControleurAPI::class.':generateObjAPI')->setName('affichageUnJeu');
 $app->get('/api/games', ControleurAPI::class.':affichageJeux')->setName('affichage200Jeu');
 $app->get('/api/games/{id}/comments', ControleurAPI::class.':affichageCommentaireJeu')->setName('affichageCommentaireJeu');
-
+$app->get('/api/games/{id}/characters', ControleurAPI::class.':affichageCharacterJeu')->setName('affichageCharacterJeu');
+$app->post('/api/games/{id}/comments', ControleurAPI::class.':injecterCommentaire')->setName('injecterCommentaire');
 
 $app->run();
