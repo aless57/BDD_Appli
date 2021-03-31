@@ -95,6 +95,7 @@ $commentaire3user2->save();
 // PARTIE 2
 
 // Boucle pour user
+/*
 $faker = Faker\Factory::create("fr_FR");
 
 for($i =0; $i <25000 ; $i++){
@@ -111,16 +112,25 @@ for($i =0; $i <25000 ; $i++){
         $commentaire = new Commentaire();
         $commentaire->title = $faker->word();
         $commentaire->content = $faker -> text();
-        $commentaire->fk_email = $uEmail;  
+        $commentaire->fk_email = $uEmail;
         $commentaire->fk_idjeu = random_int(1, 47978);
         $commentaire->save();
     }
     
 
+}*/
+
+echo "<h2> Lister les commentaires d'un utilisateur donné, afficher la date du commentaire de façon lisible, ordonnés par date décroissante </h2>\n\n";
+echo "<br>";
+echo "<br>";
+
+echo "Pour Gérard Natalie : <br>\n\n";
+
+$commentairesNatalie = User::where("id","=",1)->get()->commentaires();
+
+foreach ($commentairesNatalie as $com){
+    echo "Titre : $com->title Content : $com->content Date de création : $com->created_at <br>\n";
 }
-
-
-
 
 
 

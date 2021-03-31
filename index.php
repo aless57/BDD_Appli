@@ -25,7 +25,7 @@ $app = new \Slim\App($container);
 //Chemin Accueil
 $app->get('/api/games/{id}', ControleurAPI::class.':generateObjAPI')->setName('affichageUnJeu');
 $app->get('/api/games', ControleurAPI::class.':affichageJeux')->setName('affichage200Jeu');
-$app->get('/api/games/{id}/', ControleurAPI::class.':affichageJeux')->setName('affichage200Jeu');
+$app->get('/api/games/{id}/comments', ControleurAPI::class.':affichageCommentaireJeu')->setName('affichageCommentaireJeu');
 
 
 $app->run();

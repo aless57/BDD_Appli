@@ -20,11 +20,15 @@ Configuration DataBase :
 - collation=utf8_unicode_ci
 - extension=pdo_mysql
 
-#Sujet des séances (/src)
-- Séance 1 : 1.php & /pagination/index.php
-- Séance 2 : 2.php
-- Séance 3 : 3.php
-- Séance 4 : 4.php & /TP/ressources.sql
+> Ne pas oublier d'ajouter les tables contenues dans le fichier /src/TP/ressources.sql
+> et https://arche.univ-lorraine.fr/mod/resource/view.php?id=428597
+
+#Sujet des séances
+- Séance 1 : /src/1.php & /src/pagination/index.php
+- Séance 2 : /src/2.php
+- Séance 3 : /src/3.php
+- Séance 4 : /src/4.php & /src/TP/ressources.sql
+- Séance 5 & 6 : index.php & /src/controller/ControleurAPI.php & /src/vues/Vue.php
 
 
 #Préparation des séances (/src)

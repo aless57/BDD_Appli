@@ -2,7 +2,10 @@
 namespace seance\controller;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+use seance\model\Commentaire;
 use seance\model\Game;
+use seance\model\Platform;
+use seance\model\User;
 use seance\vues;
 class ControleurAPI {
     private $container;
@@ -12,50 +15,86 @@ class ControleurAPI {
     }
 
     public function generateObjAPI(Request $rq, Response $rs, $args) {
-        $listeJeu = Game::select("id","name","alias","deck","description","original_release_date")->where('id','=',(int) $args['id'])->firstOrFail();
-        $tableau = json_encode($listeJeu, JSON_FORCE_OBJECT);
-        $vue = new vues\Vue([$tableau], $this->container);
-
-        $rs->getBody()->write($vue->render(0));
+        try {
+            $listeJeu = Game::select("id","name","alias","deck","description","original_release_date")->where('id','=',(int) $args['id'])->firstOrFail();
+            array_walk_recursive($listeJeu, function(&$v) { $v = strip_tags($v); });
+            $array['game'] = $listeJeu;
+            $lesPlatform = Game::select("id","name","alias","deck","description","original_release_date")->where('id','=',(int) $args['id'])->first()->platforms()->get();
+            $arrayPlatform = array();
+            foreach ($lesPlatform as $platform){
+                array_walk_recursive($platform, function(&$v) { $v = strip_tags($v); });
+                $arrayPlatform[] = array("id"=>$platform->id , "nom"=>$platform->name, "alias"=>$platform->alias,"abbreviation"=>$platform->abbreviation);
+            }
+            if($arrayPlatform!=[]){
+                $array['platforms'] = $arrayPlatform;
+            }
+            $url_jeuCommentaire = $this->container->router->pathFor("affichageCommentaireJeu", ['id' => $args['id']]);
+            $array['links'] = array("comments" => array("href" =>$url_jeuCommentaire));
+            $tableau = json_encode($array, JSON_UNESCAPED_SLASHES);
+            $vue = new vues\Vue([$tableau], $this->container);
+            $rs->getBody()->write($vue->render(0));
+        }
+        catch (\Exception $e){
+            $rs = $rs->withJson(['error' => 'Jeu introuvable'],404);
+        }
         return $rs;
     }
 
     public function affichageJeux(Request $rq, Response $rs, $args) {
-        $page = false;
-
-        if($_GET != null){
-            $page = $rq->getQueryParam('page');
+        $page = $rq->getQueryParam('page',1);
+        $row = Game::count();
+        $listeJeux = Game::select("id","name","alias","deck")->offset(200*($page-1))->limit(200)->get();
+        foreach ($listeJeux as $lejeu){
+            $url_jeu = $this->container->router->pathFor("affichageUnJeu", ['id' => $lejeu->id]);
+            $lejeu["links"]=array("self"=>array("href" => $url_jeu));
         }
-        if(!$page || $page==1){
-            $listeJeux = Game::select("id","name","alias","deck")->limit(200)->get();
-            foreach ($listeJeux as $lejeu){
-                $link = "/api/game/{$lejeu->id}";
-                $lejeu["links"]=array("self"=>array("href" => $link));
-            }
-            $links = array("next" => array("href" => "/api/games?page=2"));
-        }elseif ($page==240){
-            $listeJeux = Game::select("id","name","alias","deck")->offset(200*($page-1))->limit(200)->get();
-            foreach ($listeJeux as $lejeu){
-                $link = "/api/game/{$lejeu->id}";
-                $lejeu["links"]=array("self"=>array("href" => $link));
-            }
+        if($page==1){
+            $url_pagenext = $this->container->router->pathFor("affichage200Jeu", ['id' => $lejeu->id]);
+            $pagePlus = $page + 1 ;
+            $url_pagenext = $url_pagenext . "?page=" . $pagePlus;
+            $links = array("next" => array("href" => $url_pagenext));
+        }elseif ($page * 200 >= $row){
+            $url_pageprev = $this->container->router->pathFor("affichage200Jeu", ['id' => $lejeu->id]);
             $pageMoins = $page - 1;
-            $links = array("prev" => array("href" => "/api/games?page={$pageMoins}"));
+            $url_pageprev = $url_pageprev . "?page=" . $pageMoins;
+            $links = array("prev" => array("href" => $url_pageprev));
         }
         else{
-            $listeJeux = Game::select("id","name","alias","deck")->offset(200*($page-1))->limit(200)->get();
-            foreach ($listeJeux as $lejeu){
-                $link = "/api/game/{$lejeu->id}";
-                $lejeu["links"]=array("self"=>array("href" => $link));
-            }
+            $url_pagenext = $this->container->router->pathFor("affichage200Jeu", ['id' => $lejeu->id]);
             $pagePlus = $page + 1 ;
+            $url_pagenext = $url_pagenext . "?page=" . $pagePlus;
+
+            $url_pageprev = $this->container->router->pathFor("affichage200Jeu", ['id' => $lejeu->id]);
             $pageMoins = $page - 1;
-            $links = array("prev" => array("href" => "/api/games?page={$pageMoins}"), "next" => array("href" => "/api/games?page={$pagePlus}"));
+            $url_pageprev = $url_pageprev . "?page=" . $pageMoins;
+
+            $links = array("prev" => array("href" => $url_pageprev), "next" => array("href" => $url_pagenext));
         }
-        $array = ["games" => $listeJeux, "links" => $links];
-        $tableau = json_encode($array, JSON_UNESCAPED_SLASHES);
-        $vue = new vues\Vue([$tableau], $this->container);
-        $rs->getBody()->write($vue->render(1));
+
+        if($listeJeux->count() ==0){
+            $rs = $rs->withJson(['error' => 'Page inconnue'],404);
+        }else{
+            $array = ["games" => $listeJeux, "links" => $links];
+            $tableau = json_encode($array, JSON_UNESCAPED_SLASHES);
+            $vue = new vues\Vue([$tableau], $this->container);
+            $rs->getBody()->write($vue->render(1));
+        }
+        return $rs;
+    }
+
+    public function affichageCommentaireJeu(Request $rq, Response $rs, $args) {
+        $listeCommentaires = Commentaire::select("id","title","content","created_at","fk_email")->where('fk_idjeu',"=", (int) $args['id'])->get();
+        if($listeCommentaires->count() ==0){
+            $rs = $rs->withJson(['error' => 'Page inconnue'],404);
+        }else{
+            foreach ($listeCommentaires as $commentaire){
+                $nameUserCommentaire = User::where("email","=",$commentaire->fk_email)->first();
+                $array["$nameUserCommentaire->nom"] = array($commentaire);
+            }
+            $tableau = json_encode($array, JSON_FORCE_OBJECT);
+            $vue = new vues\Vue([$tableau], $this->container);
+            $rs->getBody()->write($vue->render(0));
+        }
         return $rs;
     }
 
