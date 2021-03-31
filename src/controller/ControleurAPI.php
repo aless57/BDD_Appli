@@ -122,22 +122,28 @@ class ControleurAPI {
         $post = $rq->getParsedBody();
         if (isset($post['commentaire'])) {
             try {
-                $id = filter_var($post['commentaire']['id']);
                 $title = filter_var($post['commentaire']['content']);
                 $content = filter_var($post['commentaire']['content']);
                 $created_at = filter_var($post['commentaire']['created_at']);
                 $fk_email = filter_var($post['commentaire']['fk_email']);
 
+
                 $commentaire = new Commentaire();
-                $commentaire->id = $id;
                 $commentaire->title = $title;
                 $commentaire->content = $content;
                 $commentaire->created_at = $created_at;
                 $commentaire->fk_email = $fk_email;
-                $commentaire->save();
+                $commentaire->fk_idjeu = $args['id'];
 
-                $rs->write(json_encode($commentaire, JSON_PRETTY_PRINT));
-                return $rs->withStatus(201)->withHeader('Location','/api/comments'.$id);
+                if (User::where('email',"=",$fk_email)->count() != 0){
+                    $commentaire->save();
+                    $rs->write(json_encode($commentaire, JSON_PRETTY_PRINT));
+                    return $rs->withStatus(201)->withHeader('Location','/api/comments'.$args['id']);
+                }else{
+                    $rs = $rs->withJson(['error' => 'Email inconnue'], 403);
+                    return $rs;
+                }
+
             } catch (ModelNotFoundException $e) {
                 $rs = $rs->withJson(['error' => 'Pas de user'], 404);
                 return $rs;
